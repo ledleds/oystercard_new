@@ -8,7 +8,7 @@ attr_reader :balance
   LIMIT = 90
 
   def top_up(money)
-    fail "#{money} is over the #{LIMIT}." if money > LIMIT
+    fail "#{money} is over #{LIMIT}." if money > LIMIT
      @balance += money
   end
 

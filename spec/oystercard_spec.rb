@@ -18,14 +18,14 @@ describe Oystercard do
       expect(card.balance).to eq 0
     end
 
-    it "increases the balance when topped up" do
+    it "puts money on card" do
       card.top_up(10)
       expect(card.balance).to eq 10
     end
 
-    it "has a maximum limit of £90" do
+    it "has a maximum limit" do
       over_limit = 91
-      expect{card.top_up(over_limit)}.to raise_error "#{over_limit} is over the #{Oystercard::LIMIT}."
+      expect{card.top_up(over_limit)}.to raise_error "#{over_limit} is over #{Oystercard::LIMIT}."
     end
 
   end
