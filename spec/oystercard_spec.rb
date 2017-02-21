@@ -27,15 +27,11 @@ describe Oystercard do
       expect{card.top_up(91)}.to raise_error "The maximum amount is: £#{Oystercard::LIMIT}."
     end
 
-    it "deducts a fare from the card" do
-      card.deduct(5)
-      expect(card.balance).to eq(-5)
-    end
   end
 
     describe "touch in/ out" do
       before(:each) do
-        card.top_up(10)
+        card.top_up(3)
       end
 
       it "responds to touch_in" do
@@ -64,10 +60,14 @@ describe Oystercard do
       context "When balance is below the minimum" do
 
         it "returns an error when balance is less than the minimum" do
-          card.deduct(10) 
+          card.touch_out
           error = "The minimum balance needed for your journey is £#{Oystercard::MIN}"
           expect{card.touch_in(card)}.to raise_error error
         end
+      end
+
+      it "reduces the balance by the minimum fare" do
+          expect{card.touch_out}.to change{card.balance}.by(-Oystercard::MIN_FARE)
       end
 
 
