@@ -7,9 +7,10 @@ attr_reader :balance
   end
 
   LIMIT = 90
+  MIN = 1
 
   def top_up(money)
-    fail "#{money} is over #{LIMIT}." if money > LIMIT
+    fail "The maximum amount is: £#{LIMIT}." if money > LIMIT
      @balance += money
   end
 
@@ -18,15 +19,20 @@ attr_reader :balance
   end
 
   def touch_in(card)
+    check_balance
     @in_transit << card
+  end
+
+  def touch_out
+    @in_transit.pop
   end
 
   def in_journey?
     @in_transit.size > 0
   end
 
-  def touch_out
-    @in_transit.pop
+  def check_balance
+    fail "The minimum balance needed for your journey is £#{MIN}" unless @balance > MIN
   end
 
 end
