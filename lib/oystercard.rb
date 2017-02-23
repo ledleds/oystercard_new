@@ -1,5 +1,7 @@
+require_relative 'journey'
+
 class Oystercard
-attr_reader :balance, :entry_station, :exit_station, :journey_history
+attr_reader :balance, :entry_station, :exit_station, :journey_history, :journey
 
   def initialize
     @balance = 0
@@ -19,7 +21,11 @@ attr_reader :balance, :entry_station, :exit_station, :journey_history
 
   def touch_in(station)
     check_balance
-    @entry_station = station
+    journey = Journey.new(station)
+    # journey.save_entry_station(station)
+    #above doesnt work because we're trying to pass in a different object. Journey and journey in our test are both different
+    # @entry_station = station
+
     # @in_transit << card
   end
 
