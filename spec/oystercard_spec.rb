@@ -10,7 +10,7 @@ describe Oystercard do
   end
 
   it "initializes with an empty journey log" do
-    expect(card.journey_history).to eq []
+    expect(card.journey_history).to be_empty
   end
 
   describe "#top_up", :top_up do
@@ -80,7 +80,6 @@ describe Oystercard do
       end
 
       it "puts station data hash into history array" do
-
         card.touch_in(entry_station)
         card.touch_out(exit_station)
         expect(card.journey_history).to eq [{:entry_station => entry_station, :exit_station => exit_station}]
