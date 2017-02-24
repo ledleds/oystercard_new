@@ -52,7 +52,7 @@ describe Oystercard, :oy do
 
         it "returns an error when balance is less than the minimum" do
           empty_card = described_class.new
-          error = "The minimum balance needed for your journey is £#{described_class::MIN}"
+          error = "The minimum balance needed for your journey is £#{described_class::MIN_BALANCE}"
           expect{empty_card.touch_in(entry_station)}.to raise_error error
         end
       end
@@ -61,7 +61,7 @@ describe Oystercard, :oy do
     describe "#touch_out" do
       it "reduces the balance by the minimum fare" do
         card.touch_in(entry_station)
-        expect{card.touch_out(exit_station)}.to change{card.balance}.by(-Oystercard::MIN_FARE)
+        expect{card.touch_out(exit_station)}.to change{card.balance}.by(-Journey::MIN_FARE)
       end
 
       it "puts station data hash into history array" do

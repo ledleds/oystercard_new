@@ -10,8 +10,8 @@ attr_reader :balance, :journey_history, :journey
   end
 
   LIMIT = 90
-  MIN = 1
-  MIN_FARE = 3
+  MIN_BALANCE = 1
+  # MIN_FARE = 3#JOURNEY
 
   def top_up(money)
     fail "The maximum amount is: £#{LIMIT}." if money > LIMIT
@@ -25,7 +25,7 @@ attr_reader :balance, :journey_history, :journey
   end
 
   def touch_out(station)
-    deduct(MIN_FARE)
+    deduct(@journey.fare)#journey deduct(@journey.fare) if @journey.touched_in
     @journey.save_exit_station(station)
     @current_journey[:exit_station] = @journey.exit_station
     @journey_history << @current_journey
@@ -33,7 +33,7 @@ attr_reader :balance, :journey_history, :journey
 
 
   def check_balance
-    fail "The minimum balance needed for your journey is £#{MIN}" unless @balance > MIN
+    fail "The minimum balance needed for your journey is £#{MIN_BALANCE}" unless @balance > MIN_BALANCE
   end
 
   private

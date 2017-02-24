@@ -36,6 +36,18 @@ describe Journey, :j do
       expect(journey.in_journey?).to eq false
     end
   end
+
+  context "calculating fare" do
+    it 'responds to fare' do
+      expect(journey).to respond_to(:fare)
+    end
+
+    xit "charges them the penalty fare if they haven't touched in" do
+      #card.touch_out(exit_station)
+      expect(journey.fare).to eq "You haven't touched in"#described_class::PENALTY_FARE
+    end
+
+  end
   #calculate
   #complete
 
