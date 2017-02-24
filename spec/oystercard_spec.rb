@@ -1,6 +1,6 @@
 require 'oystercard'
 
-describe Oystercard do
+describe Oystercard, :oy do
   subject(:card) {described_class.new}
   let(:entry_station) {double :entry_station}
   let(:exit_station) {double :exit_station}
@@ -44,39 +44,24 @@ describe Oystercard do
         expect(card).to respond_to(:touch_in)
       end
 
-      it "returns a boolean value" do
-        card.touch_in(card)
-        expect(subject.in_journey?).to be true
-      end
-
       it "responds to check_balance" do
         expect(card).to respond_to(:check_balance)
-      end
-
-      it "it sets the entry station" do
-        card.touch_in(entry_station)
-        expect(card.entry_station).to eq entry_station
       end
 
       context "when balance is below the minimum" do
 
         it "returns an error when balance is less than the minimum" do
-          card.touch_out(exit_station)
-          error = "The minimum balance needed for your journey is £#{Oystercard::MIN}"
-          expect{card.touch_in(card)}.to raise_error error
+          empty_card = described_class.new
+          error = "The minimum balance needed for your journey is £#{described_class::MIN}"
+          expect{empty_card.touch_in(entry_station)}.to raise_error error
         end
       end
     end
 
     describe "#touch_out" do
-      end
       it "reduces the balance by the minimum fare" do
+        card.touch_in(entry_station)
         expect{card.touch_out(exit_station)}.to change{card.balance}.by(-Oystercard::MIN_FARE)
-      end
-
-      it "sets exit_station" do
-        card.touch_out(exit_station)
-        expect(card.exit_station).to eq exit_station
       end
 
       it "puts station data hash into history array" do
@@ -84,5 +69,6 @@ describe Oystercard do
         card.touch_out(exit_station)
         expect(card.journey_history).to eq [{:entry_station => entry_station, :exit_station => exit_station}]
       end
+    end
 
   end

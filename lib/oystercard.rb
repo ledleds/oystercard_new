@@ -1,13 +1,12 @@
 require_relative 'journey'
 
 class Oystercard
-attr_reader :balance, :entry_station, :exit_station, :journey_history, :journey
+attr_reader :balance, :journey_history, :journey
 
   def initialize
     @balance = 0
     @journey_history = []
-    @entry_station = nil
-    @exit_station = nil
+    @current_journey = {}
   end
 
   LIMIT = 90
@@ -21,27 +20,17 @@ attr_reader :balance, :entry_station, :exit_station, :journey_history, :journey
 
   def touch_in(station)
     check_balance
-    journey = Journey.new(station)
-    # journey.save_entry_station(station)
-    #above doesnt work because we're trying to pass in a different object. Journey and journey in our test are both different
-    # @entry_station = station
-
-    # @in_transit << card
+    @journey = Journey.new(station)
+    @current_journey[:entry_station] = @journey.entry_station
   end
 
   def touch_out(station)
     deduct(MIN_FARE)
-    @exit_station = station
-    @journey_history << {
-      :entry_station => @entry_station,
-      :exit_station => @exit_station
-    }
-    @entry_station = nil
+    @journey.save_exit_station(station)
+    @current_journey[:exit_station] = @journey.exit_station
+    @journey_history << @current_journey
   end
 
-  def in_journey?
-    !!@entry_station
-  end
 
   def check_balance
     fail "The minimum balance needed for your journey is £#{MIN}" unless @balance > MIN

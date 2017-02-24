@@ -1,18 +1,41 @@
 require 'journey'
 require 'oystercard'
 
-describe Journey do
+describe Journey, :j do
   subject(:card) {Oystercard.new}
   let(:entry_station) {double :entry_station}
+  let(:exit_station) {double :exit_station}
   subject(:journey) {described_class.new(entry_station)}
   before(:each) {card.top_up(3)}
 
-  #start
-  it "saves entry data when card is touched in" do
-    card.touch_in(entry_station) #this should instantiate journey
-    expect(journey.entry_station).to eq entry_station
+  context "when touching in" do
+    it "saves entry data when card is touched in" do
+      expect(journey.entry_station).to eq entry_station
+    end
+
+    it "sets in_journey to true" do
+      expect(journey.in_journey?).to eq true
+    end
   end
+
   #finish
+
+  context "when touching out" do
+
+    it "saves the exit station" do
+      journey.save_exit_station(exit_station)
+      expect(journey.exit_station).to eq(exit_station)
+    end
+
+    it "sets entry station to nil" do
+      expect{journey.save_exit_station(exit_station)}.to change {journey.entry_station}.to nil
+    end
+
+    it "sets in_journey to false" do
+      journey.save_exit_station(exit_station)
+      expect(journey.in_journey?).to eq false
+    end
+  end
   #calculate
   #complete
 
