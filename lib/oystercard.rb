@@ -20,14 +20,14 @@ attr_reader :balance, :journey_history, :journey
 
   def touch_in(station)
     check_balance
-    @journey = Journey.new
+    # deduct(@journey.fare)
     @journey.save_entry_station(station)
     @current_journey[:entry_station] = @journey.entry_station
   end
 
   def touch_out(station)
-    deduct(@journey.fare)
     @journey.save_exit_station(station)
+    deduct(@journey.fare)
     @current_journey[:exit_station] = @journey.exit_station
     @journey_history << @current_journey
     @current_journey = {}
@@ -38,7 +38,7 @@ attr_reader :balance, :journey_history, :journey
     fail "The minimum balance needed for your journey is £#{MIN_BALANCE}" unless @balance > MIN_BALANCE
   end
 
-  private
+  # private
 
   def deduct(fare)
     @balance -= fare

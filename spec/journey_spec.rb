@@ -13,7 +13,7 @@ describe Journey, :j do
       journey.save_entry_station(entry_station)
     end
 
-    it "saves entry data when card is touched in" do
+    it "saves entry data" do
       expect(journey.entry_station).to eq entry_station
     end
 
@@ -29,11 +29,6 @@ describe Journey, :j do
       expect(journey.exit_station).to eq(exit_station)
     end
 
-    it "sets entry station to nil" do
-      journey.save_entry_station(entry_station)
-      expect{journey.save_exit_station(exit_station)}.to change {journey.entry_station}.to nil
-    end
-
     it "sets in_journey to false" do
       journey.save_exit_station(exit_station)
       expect(journey.in_journey?).to eq false
@@ -45,14 +40,35 @@ describe Journey, :j do
       expect(journey).to respond_to(:fare)
     end
 
-    it "charges them the minimum fare if they have touched in" do
-      journey.save_entry_station(entry_station)
-      expect(journey.fare).to eq described_class::MIN_FARE
+    context "when touched in" do
+      before do
+        journey.save_entry_station(entry_station)
+      end
+
+      it "charges them the minimum fare" do
+        journey.save_exit_station(exit_station)
+        expect(journey.fare).to eq described_class::MIN_FARE
+      end
+
+      it 'charges a pentaly fare when they touch in again' do
+        journey.save_entry_station(entry_station) #second touch in
+        expect(journey.fare).to eq described_class::PENALTY_FARE
+      end
     end
 
-    it "charges them the penalty fare if they haven't touched in" do
-      journey.save_exit_station(exit_station)
-      expect(journey.fare).to eq described_class::PENALTY_FARE
+    context "when not touched in" do
+      it "charges them the penalty fare" do
+        journey.save_exit_station(exit_station)
+        expect(journey.fare).to eq described_class::PENALTY_FARE
+      end
+    end
+
+    context "when journey complete" do
+
+      it "sets entry station to nil" do
+        p journey.save_entry_station(entry_station)
+        expect{journey.save_exit_station(exit_station)}.to change {journey.entry_station}.to nil
+      end
     end
   end
 
