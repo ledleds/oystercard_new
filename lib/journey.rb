@@ -4,7 +4,11 @@ class Journey
   PENALTY_FARE = 6
   MIN_FARE = 3
 
-  def initialize(station)
+  def initialize
+    @touched_in = false
+  end
+
+  def save_entry_station(station)
     @entry_station = station
     @touched_in = true
   end
@@ -20,11 +24,10 @@ class Journey
   end
 
   def fare
-    # No test for this method yet!
     if @touched_in
       MIN_FARE
-    else PENALTY_FARE
-
+    else
+      PENALTY_FARE
     end
   end
 end
